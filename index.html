@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="utility.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
+    <title>Music Player Platform | MusiClip</title>
+</head>
+
+<body>
+
+
+    <div class="container">
+        <aside class="sidebar ">
+            <div class="logo">
+                <i class='bx bxs-music'></i>
+                <a href="#">MusiClip</a>
+
+                <button class="menu-btn" id="menu-close">
+                    <i class='bx bx-log-out-circle'></i>
+                </button>
+            </div>
+            <div class="library album ">
+                <h5>Album</h5>
+            </div>
+            <div class=" albumMenu menu"></div>
+
+            <div class="menu menu1">
+                <h5>Menu</h5>
+                <ul>
+                    <li> <i class='bx bxs-bolt-circle'></i>
+                        <a href="#">Explore</a>
+                    </li>
+                    <li> <i class='bx bxs-volume-full'></i>
+                        <a href="#">Genres</a>
+                    </li>
+
+                    <li> <i class='bx bxs-microphone'></i>
+                        <a href="#">Artists</a>
+                    </li>
+                    <li> <i class='bx bxs-radio'></i>
+                        <a href="#">Poddcasts</a>
+                    </li>
+                    <li>
+                        <i class='bx bxs-photo-album'></i>
+                        <a href="#">Albums</a>
+                    </li>
+                    <li>
+                        <i class='bx bxs-heart'></i>
+                        <a href="#">Favourites</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="library">
+                <h5>Library</h5>
+            </div>
+            <div class="songList flex">
+                <ul></ul>
+            </div>
+
+
+            <div class="playing">
+                <div class="top">
+                    <img src="assets/current.png">
+                    <h4>Apple<br>Homepod</h4>
+                </div>
+                <div class="bottom">
+                    <i class='bx bx-podcast'></i>
+                    <p>Playing On Device</p>
+                </div>
+            </div>
+
+
+        </aside>
+
+        <main>
+            <header>
+                <div class="nav-links">
+                    <button class="menu-btn" id="menu-open">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                    <a href="#">Music</a>
+                    <a href="#">Live</a>
+                    <a href="#">Podcast</a>
+                </div>
+
+                <div class="search">
+                    <i class='bx bx-search'></i>
+                    <input type="text" placeholder="Type here ">
+                </div>
+
+            </header>
+
+            <div class="trending">
+                <div class="left">
+                    <h5>Trending New Song</h5>
+                    <div class="info">
+                        <h2>Lost Emotions</h2>
+                        <h4>Rion Clarke</h4>
+                        <h5>63 Million Plays</h5>
+                        <div class="buttons">
+                            <button id="listenNow">Listen Now </button>
+                            <i class='bx bxs-heart'></i>
+                        </div>
+                    </div>
+                </div>
+                <img src="assets/trend.png">
+            </div>
+
+            <div class="playlist">
+                <div class="genres ">
+                    <div class="header">
+                        <h5>Albums</h5>
+                        <button class="seeAll" id="seeAll_1">See all</button>
+                    </div>
+
+                    <div class="items cardContainer"></div>
+
+                </div>
+
+                <div class="top-songs">
+                    <div class="header">
+                        <h5>Top songs</h5>
+                        <button class="seeAll" id="seeAll_2">See all</button>
+
+                    </div>
+                    <div class="music-list">
+                        <!-- <div></div> -->
+                    </div>
+                </div>
+
+            </div>
+
+
+        </main>
+
+        <div class="right-section">
+
+            <div class="profile">
+                <i class='bx bxs-bell'></i>
+                <i class='bx bxs-cog'></i>
+                <div class="user">
+                    <div class="left">
+                        <img src="assets/profile.png">
+                    </div>
+                    <div class="right">
+                        <h5>Sagar Sati</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="music-player">
+                <div class="top-section">
+                    <div class="header">
+                        <h5>Player</h5>
+                        <i class='bx bxs-playlist'></i>
+                    </div>
+                    <div class="song-info">
+                        <img src="assets/player.png">
+                        <div class="description">
+                            <h3 class="song-name">Click on the Album to load song</h3>
+                            <h5 class="artist-name">Kael Fischer</h5>
+                        </div>
+
+                        <div class="progress">
+                            <p id="startTime">01:02</p>
+                            <input type="range" min="0" max="100" value="0" class="cursor" id="seekbar">
+                            <p id="endTime">02:45</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="player-actions">
+                    <div class="buttons">
+                        <!-- <i class='bx bx-repeat'></i> -->
+                        <i class='bx bx-first-page' id="previous"></i>
+                        <img src="assets/play.png" alt="" class="play-button cursor" id="play">
+                        <i class='bx bx-last-page' id="next"></i>
+                        <!-- <i class='bx bx-transfer-alt'></i> -->
+                    </div>
+                    <div class="volume cursor flex item-center justify-center">
+                        <img width="25" src="img/volume.svg" alt="volume">
+                        <div class="range volumerange">
+                            <input class="cursor" type="range" name="" id="">
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div>
+
+        <div id="cover"></div>
+        <p id="title"></p>
+        <p id="artist"></p>
+        <p id="album"></p>
+        <p id="genre"></p>
+    </div>
+
+    <script>
+        document.getElementById("listenNow").addEventListener("click", () => {
+            alert("Please Click on Album to load playlist")
+        })
+    </script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
