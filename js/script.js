@@ -15,18 +15,17 @@ let songs;
 let currfolder;
 let bgColorArr = ['#476a8a', '#a69984', '#a24c34', '#0d4045', '#a67894', '#5547a5'];
 
-function albumColor(arrlength) {
-    // console.log(arrlength)
-    for (let i = 0; i < arrlength; i++) {
-        // console.log(i)
-        let colorIndex = i % bgColorArr.length;
-        // console.log(colorIndex)
-        let childArray = Array.from(document.querySelector(".cardContainer").children);
-        childArray[i].style.backgroundColor = bgColorArr[colorIndex]
+function albumColor(count) {
+    const musicItems = document.querySelectorAll(".musicitem");
 
+    if (musicItems.length) {
+        musicItems.forEach((item, index) => {
+            // Use bgColorArr to set the background color
+            const color = bgColorArr[index % bgColorArr.length]; // Cycle through bgColorArr if there are more items than colors
+            item.style.backgroundColor = color;
+        });
     }
 }
-
 
 
 function secondsToMinutes(seconds) {
@@ -198,31 +197,42 @@ async function displayAlbums() {
     let div = document.createElement("div");
     div.innerHTML = response;
     let anchors = div.getElementsByTagName("a");
-    let cardContainer = document.querySelector(".cardContainer");
+    let cardContainer = document.querySelector(".cardContainer");  // Reference to the cardContainer
     let albumMenu = document.querySelector(".albumMenu");
     let array = Array.from(anchors);
-    // Loop through the albums and display them
-    for (let index = 1; index < array.length; index++) {
-        const e = array[index];
-        let folder = e.href.split("/").slice(-2)[0];
 
-        // Fetch album info
-        let albumInfo = await fetch(`/songs/${folder}/info.json`);
-        let albumDetails = await albumInfo.json();
+    // Check if cardContainer exists before proceeding
+    if (cardContainer) {
+        // Loop through the albums and display them
+        for (let index = 1; index < array.length; index++) {
+            const e = array[index];
 
-        // Add album to card container
-        cardContainer.innerHTML += `
-            <div class="musicitem" data-folder="${folder}">
-                <p>${albumDetails.title}</p> 
-            </div>`;
-        albumMenu.innerHTML += `<div class="musicitem flex cursor" data-folder="${folder}">
-        <i class="bx bxs-photo-album"></i>        
-        <p>${albumDetails.title}</p> 
-            </div>`
+            // Check if the href contains "/songs" and doesn't include ".htaccess"
+            if (e.href.includes("/songs") && !e.href.includes(".htaccess")) {
+                let folder = e.href.split("/").slice(-2)[0];
 
+                // Fetch album info
+                let albumInfo = await fetch(`/songs/${folder}/info.json`);
+                let albumDetails = await albumInfo.json();
+
+                // Add album to card container
+                cardContainer.innerHTML += `
+                    <div class="musicitem" data-folder="${folder}">
+                        <p>${albumDetails.title}</p> 
+                    </div>`;
+                albumMenu.innerHTML += `
+                    <div class="musicitem flex cursor" data-folder="${folder}">
+                        <i class="bx bxs-photo-album"></i>        
+                        <p>${albumDetails.title}</p> 
+                    </div>`;
+            }
+        }
+
+        // Ensure the card container is populated before applying colors
+        albumColor(array.length - 1);
+    } else {
+        console.warn('cardContainer not found.');
     }
-
-    albumColor(array.length - 1);
 
     let trending = document.querySelector(".trending");
     let musicList = document.querySelector(".music-list");
@@ -253,71 +263,67 @@ async function displayAlbums() {
                     </div>
                 </div>
                 <img src="/songs/${folderContainer}/cover.jpg" alt="${albumDetails.title}">`;
-                
-                // Populate the music list with songs
+
+            // Populate the music list with songs
             let songU = document.querySelector(".music-list");
             songU.innerHTML = ""; // Clear existing songs
 
             if (songs.length === 0) {
-                 // Stop music player and reset play button if no songs in album
-            play.src = "assets/play.png"; // Reset play button
-            currentSong.pause();
+                // Stop music player and reset play button if no songs in album
+                play.src = "assets/play.png"; // Reset play button
+                currentSong.pause();
                 // Display "No songs in album" message
                 songU.innerHTML = `
-        <div class="no-songs">
-            <h5>No songs in this album</h5>
-        </div>`;
-                
-            }
-            else{
-            // Play the first song automatically
-            play.src = "assets/play.png";
-            playMusic(songs[0], true);
-
-            // Handle Listen Now button click
-            let listenNow = document.getElementById("listenNow");
-            listenNow.addEventListener("click", () => {
-                console.log("listen now clicked");
+                    <div class="no-songs">
+                        <h5>No songs in this album</h5>
+                    </div>`;
+            } else {
+                // Play the first song automatically
                 play.src = "assets/play.png";
-                playMusic(songs[0]);
-            });
-            
-            
-            // Loop through the songs and get metadata using extractMetadata
-            for (const song of songs) {
-                let songPath = `/songs/${folderContainer}/${song}`;
+                playMusic(songs[0], true);
 
-                // Call the extractMetadata function to get song metadata
-                const songMetadata = await extractMetadata(songPath);
-                if (songMetadata) {
-                    const { title, artist, cover } = songMetadata;
-
-                    // Add song to the playlist
-                    songU.innerHTML += `
-                        <div class="music-item">
-                            <div class="info">
-                                <img src="${cover}" alt="${title}">
-                                <div class="details">
-                                    <h5>${song}</h5>
-                                    <p>${artist}</p>
-                                </div>
-                            </div>
-                            <div class="icon">
-                                <i class='bx bxs-right-arrow playIcon'></i>
-                            </div>
-                        </div>`;
-                }
-            }
-
-            // Handle click on individual song
-            Array.from(songU.getElementsByClassName("music-item")).forEach(songElement => {
-                songElement.addEventListener("click", async () => {
-                    const songName = songElement.querySelector("h5").textContent;
-                    const song = songs.find(s => decodeURI(s) === songName);
-                    playMusic(song);
+                // Handle Listen Now button click
+                let listenNow = document.getElementById("listenNow");
+                listenNow.addEventListener("click", () => {
+                    play.src = "assets/play.png";
+                    playMusic(songs[0]);
                 });
-            });
-        }
+
+                // Loop through the songs and get metadata using extractMetadata
+                for (const song of songs) {
+                    let songPath = `/songs/${folderContainer}/${song}`;
+
+                    // Call the extractMetadata function to get song metadata
+                    const songMetadata = await extractMetadata(songPath);
+                    if (songMetadata) {
+                        const { title, artist, cover } = songMetadata;
+
+                        // Add song to the playlist
+                        songU.innerHTML += `
+                            <div class="music-item">
+                                <div class="info">
+                                    <img src="${cover}" alt="${title}">
+                                    <div class="details">
+                                        <h5>${song}</h5>
+                                        <p>${artist}</p>
+                                    </div>
+                                </div>
+                                <div class="icon">
+                                    <i class='bx bxs-right-arrow playIcon'></i>
+                                </div>
+                            </div>`;
+                    }
+                }
+
+                // Handle click on individual song
+                Array.from(songU.getElementsByClassName("music-item")).forEach(songElement => {
+                    songElement.addEventListener("click", async () => {
+                        const songName = songElement.querySelector("h5").textContent;
+                        const song = songs.find(s => decodeURI(s) === songName);
+                        playMusic(song);
+                    });
+                });
+            }
         });
     });
 }
